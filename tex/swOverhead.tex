@@ -1,0 +1,4 @@
+\todo[inline]{Write Software Overheads section}
+This section will explore where time is going when paging with the PFA. How much time is spent in bookkeeping? Does putting kpfad on another core help? How many page faults is the PFA not able to eliminate due to Linux design choices (e.g. shared pages will fault anyway, so will read-only pages)? Initial experiments suggest a significant number of page faults make it to the OS. We also have to prematurely do bookkeeping inline at times due to correctness constraints in the kernel.
+
+This section also serves as a bit of ``future-work'' in that I will hopefully identify potential optimizations (or describe optimizations I have done due to measurement and experimentation).
