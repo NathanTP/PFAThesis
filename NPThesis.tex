@@ -1,0 +1,70 @@
+\documentclass[12pt]{article}
+
+\input{tex/packages}
+\input{tex/environ}
+\input{tex/glossary}
+
+\title{Master's Thesis}
+\author{
+        Nathan Pemberton \\
+                Department of Computer Science \\
+                University of California at Berkeley
+}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\newpage
+
+\input{tex/abstract}
+
+\newpage
+\tableofcontents
+\newpage
+
+\section{Introduction} \label{sec:intro}
+    \input{tex/intro.tex}
+
+\section{Motivation and Background}
+    \subsection{FireBox} \label{sec:firebox}
+        \input{tex/FireBox.tex}
+    \subsection{Interfaces to Remote Memory} \label{sec:rmemApproaches}
+        \input{tex/rmemApproaches.tex}
+    \subsection{OS Paging Overview} \label{sec:pagingOverview}
+        \input{tex/pagingOverview.tex}
+    \subsection{Paging Limitations} \label{sec:pagingLimits}
+        \input{tex/pagingLimits.tex}
+        
+\section{Page Fault Accelerator} \label{sec:pfa}
+    \input{tex/pfaOverview.tex}
+    \subsection{Page Fault Accelerator Design} \label{sec:pfaDesign}
+        \input{tex/pfaDesign.tex}
+        
+\section{Implementation} \label{sec:impl}
+    \input{tex/implementation.tex}
+
+\section{Evaluation} \label{sec:eval}
+    \input{tex/results.tex}
+            
+\section{Conclusion} \label{sec:conclusion}
+    \input{tex/conclusion.tex}
+
+\listoftodos
+
+\clearpage
+\begin{appendices}
+  \section{Reproducibility} \label{apx:reproduce}
+  \input{tex/reproduce.tex}
+  \section{PFA Specification} \label{apx:spec}
+  \input{tex/spec.tex}
+\end{appendices}
+
+\clearpage
+\printglossaries
+\clearpage
+
+\bibliographystyle{ieeetr}
+\bibliography{pfa}
+
+\end{document}

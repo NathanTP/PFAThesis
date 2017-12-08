@@ -1,1 +1,69 @@
- 
+Traditional datacenter design aggregates all necessary resources (e.g. disk,
+memory, power supply, etc.) into many self contained server chasis. This design
+was motivated by the ability to leverage commodity PC components and
+networks\todo{cite Berkeley NOW?}.  Additionally, an aggregated design was
+desirable because in-chasis interconnects were significantly faster than
+networks. However, datacenter-side compute has grown into an important
+independent market, leading to specialized server platforms and networks (often
+called a \gls{wsc}).  Furthermore, networking technology
+has seen a rapid increase in performance, with 40Gbps ethernet becoming
+commonplace, and 100+ Gbps networks readily available. Workloads have also
+changed; applications are fundementally distributed (e.g. service-oriented
+architecture\todo{SOA citation?}, map-reduce\todo{map-reduce citation?},
+etc.), use larger and rapidly changing datasets (``Big Data''), and demand
+latencies that can only be delivered by in-memory processing.
+
+These hardware and software trends have lead some to propose a new style of
+\gls{wsc} where resources are
+disaggregated \glsadd{disag}\cite{firebox}\cite{themachine}\cite{huaweidc30}\cite{intelrsa}\cite{fbdisag}.
+In a disaggregated \gls{wsc}, resources like disk and memory become first-class
+citizens over a high-performance network. A compute node couples CPUs, network
+interfaces, and a small amount of high-speed memory into a self-contained
+\gls{sip}. This design allows datacenter operators to scale
+memory capacity, while allocating it more flexibly (avoiding stranded resources
+and complex resource allocation policies). However, the memory access latency
+will be higher than traditional off-package DRAM, and bandwidth may be limited
+or subjected to congestion. The small on-package memory allows us to mitigate
+some of this performance gap, but the question remains: how best to use it?
+
+One way to harness the on-package DRAM is to use it as a large cache for 
+remote bulk memory. Operating systems have traditionally provided this through
+virtual memory \gls{paging} which uses virtual memory to treat local physical memory
+as a software-managed cache (typically for disk). Indeed, several groups have
+recently proposed using paging over \gls{rdma} as a way of disaggregating
+memory\cite{infiniswap}\cite{osdidisag}. Paging has traditionally been backed
+by slow disks with access latencies in the milliseconds. This lead to
+sophisticated algorithms that can take several microseconds for every cache
+miss. An alternative is to have fully hardware manged DRAM
+caches\cite{volos_DRAM}\cite{lee_tagless}. These eliminate much of the
+overhead, but lack the sophistication and application-level insight of OS-based
+approaches. For example, operating systems often use significant memory for
+optimistic pre-fetching and caching of disk blocks. A hardware-managed cache
+may choose to store these in remote memory, while the OS would simply delete
+them.
+
+This thesis introduces a hardware accelerator for OS-managed caching called the
+\gls{pfa}. The \gls{pfa} works by handling latency-critical page faults
+(cache-miss) in hardware, while allowing the OS to manage latency-insensitive
+(but algorithmically complex) evictions asynchronously. We achieve this
+decoupling with a queue of free page frames (freeQ) to be used by the \gls{pfa}
+for fetched pages, and a queue of new page descriptors (newQ) that the OS can
+use to manage new page metadata. Execution then proceeds as follows:
+
+\begin{itemize}
+	 \item The OS allocates several page frames and pushes their addresses onto
+		 the \emph{freeQ}.
+   \item The OS experiences memory pressure and selects pages to evict to
+		 remote memory. It marks them as ``remote'' in the page tables and then
+     provides them to the \gls{pfa} for eviction.
+   \item The application attempts to access a remote page, triggering the
+     \gls{pfa}
+		 to request the page from remote memory and place it in the next
+		 available free frame. The application is then resumed.
+	 \item Some time later (either through a background daemon, or through an
+		 interrupt due to full queues) the OS pops all new page descriptors off
+		 the \emph{newQ} and records the (now local) pages in its metadata. The
+		 OS typically provides more free frames at this time.
+\end{itemize}
+
+

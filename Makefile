@@ -4,11 +4,12 @@ LATEX_ARGS=--output-directory=${BUILD_DIR}
 
 all:
 	mkdir -p build
-	pdflatex ${LATEX_ARGS} main.tex
-	TEXMFOUTPUT="${BUILD_DIR}:" bibtex ${BUILD_DIR}/main.aux
-	pdflatex ${LATEX_ARGS} main.tex
-	pdflatex ${LATEX_ARGS} main.tex
-	mv build/main.pdf .
+	pdflatex ${LATEX_ARGS} NPThesis.tex
+	TEXMFOUTPUT="${BUILD_DIR}:" bibtex ${BUILD_DIR}/NPThesis.aux
+	TEXMFOUTPUT="${BUILD_DIR}:" makeglossaries -d ${BUILD_DIR} NPThesis
+	pdflatex ${LATEX_ARGS} NPThesis.tex
+	pdflatex ${LATEX_ARGS} NPThesis.tex
+	mv build/NPThesis.pdf .
 
 .PHONY: clean
 clean:
@@ -16,8 +17,4 @@ clean:
 
 .PHONY: cleanall
 cleanall: clean
-	rm -f main.pdf
-#clean:
-# 	rm -f *.aux *.blg *.out *.bbl *.log *.tdo *.toc
-# cleanall: clean
-# 	rm -f main.pdf
+	rm -f NPThesis.pdf

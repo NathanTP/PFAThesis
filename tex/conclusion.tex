@@ -1,2 +1,16 @@
-\todo[inline]{Write Conclusion}
-Obviously this will depend on our final results. I may try to lay out the conditions under which this design point makes sense (a la ``Gang Scheduling Not Worth It...Yet''). This will also be an opportunity to step back and look at the larger disaggregated memory landscape. We really started this project as a way of feeling out the limits of performance and getting concrete numbers for evaluating if disaggregation makes sense at all. At the end of the day, cache-like approaches will be highly desirable in a disaggregated setting, we need to understand its limitations.
+Disaggregated memory systems promise to simplify deployment, allocation, and
+scheduling on next-generation \glspl{wsc}, but bring significant performance
+and complexity challenges. This complexity cannot be mitigated with shallow
+application changes because assumptions about system performance run deep.
+While caching attempts to avoid these challenges, we find that virtual memory
+paging is no different; the OS machanisms implementing paging were designed in
+a world with millisecond-level access latencies and are not suitible for the
+microsecond access times offered by remote memory. The PFA allows us to make
+the deep changes needed to accomodate this new environment. By improving
+end-to-end application performance by up to 40\%, the PFA enables a greater
+range of applications to run on limited local memory. However, caching is a
+general purpose approach, and applications with large working sets and poor
+locality will always suffer from increased main memory access times. To take
+full advantage of disaggregated memory, we will need a mix of interfaces, both
+implicit, and explicit.
+

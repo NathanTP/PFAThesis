@@ -1,8 +1,59 @@
-\todo[inline]{Write Remote Memory Approach section}
-This section serves as a survey of potential approaches to accessing remote memory from software. It will cover at least the following topics:
+While there are many interesting research questions surrounding this new
+generation of WSC, in this thesis I will focus on the question of how
+applications should access their local and remote memory resources. This is not
+an entirely new problem. Previous mainframe and high-performance computing
+platforms have exposed the concept of remote memory. 
 
-\begin{itemize}
-    \item Related work (soNUMA, various memory blades, DRAM caches, etc.). \cite{sonuma}
-    \item References to previous projects I've done (e.g. porting Spark to use disaggregated memory, Nephele, etc.).
-    \item Network-based experiments performed at Berkeley (but not by me). This is the core motivation for the PFA project. Emmanuel+Peter Gao measured OS paging overheads for a number of benchmarks.
-\end{itemize}
+\subsubsection{Low-Level Interfaces}
+\Gls{numa} architectures partition memory resources
+accross several compute nodes such that memory is always local to exactly one
+compute resource, but still directly addressible by the others. In this case,
+all memory has the same interface (loads and stores from CPUs), but some is
+faster than others (non-uniform). Some \gls{numa} systems include hardware services
+to aid in page migration to mitigate this effect\cite{sgi_origin}.
+
+\gls{rdma} systems are similar to NUMA in that memory
+resources are partitioned among several compute nodes (memory is always local
+to someone). The difference is that while NUMA systems typically expose a
+cache-coherent load-store interface to both local and remote memory resources,
+\gls{rdma} uses a special put/get interface to access remote memory resources.
+Typically, this service is provided through the network interface and managed
+by software. This interface allows RDMA systems to scale beyond what is
+possible in NUMA systems, at the cost of remote memory access performance and a
+more complex interface to applications.\todo{cite RDMA?}
+
+Finally, a new class of interface has been recently introduced; the
+memory-semantic fabric. A memory-semantic fabric abstracts memory into a simple
+load-store interface (rather than technology-specific protocols). This
+abstraction enables heterogenous memory technologies in flexible topologies.
+Memory thus becomes a first-class citizen (often called a "memory blade") on a
+memory-optimized interconnect. The hope is that such interfaces will allow for
+greater scalability and flexibility than NUMA, while providing a more direct
+interface than RDMA\cite{genz}\cite{sonuma}. 
+
+\subsubsection{Software Interfaces}
+The low level interfaces listed above do not necessarily mandate a particular
+software interface. NUMA systems typically expose a virtual memory abstraction
+to applications. In this case, the OS manages mappings from virtual to physical
+addresses while hardware uses those mappings to automatically route loads and
+stores to the appropriate memory resources. The OS is also responsible for choosing which NUMA domain to
+allocate memory from. This can be a complex decision and much effort has gone
+into studying such allocation policies\todo{cite NUMA placement algos?}.
+
+RDMA systems are further divorced from specific hardware interfaces and enjoy
+a great diversity of interfaces. Some programming languages use a partitioned global
+address space to make it appear as if language-level variables are all directly
+accessible\cite{upc}\cite{grappa}. Other systems use RDMA more directly to
+accelerate applications such as key-value stores\cite{ramcloud}\cite{farm}.
+
+Memory-semantic fabrics are newer and it is not clear how their interfaces
+should be exposed. By coupling tightly with CPUs, it is possible to address
+them directly using virtual memory. However, it may be desirable to allow
+applications to choose which memory they access, or have more abstracted
+interfaces (e.g. disk-like).
+
+In this thesis, I will focus on a very general interface called demand paging
+(covered in detail in the next section) that can be implemented under any of
+the low-level interfaces listed here. However, the focus will be on the
+memory-semantic fabric approach.
+

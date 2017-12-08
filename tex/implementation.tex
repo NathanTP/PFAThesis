@@ -1,15 +1,62 @@
-The PFA was implemented within the RISC-V ecosystem. RISC-V is an open-source instruction set with several open and closed-source implementations and ports for many common software components\cite{riscv}. I used the RISC-V port of Linux 4.13\cite{rvLinux} with a Buildroot generated user space\cite{rvBuildroot}.
+The PFA was implemented within the RISC-V ecosystem. RISC-V is an open-source
+instruction set with several open and closed-source implementations and ports
+for many common software components\cite{riscv}. I used the RISC-V port of
+Linux 4.13 with a Buildroot generated user
+space.
 
 \subsection{PFA Reference Implementation}
-In order to accelerate software development, and to provide a golden-model of PFA behavior, I implemented the PFA first in a RISC-V ISA simulator called "Spike"\cite{spike}. Spike provides a functional simulation of a RISC-V core through a straightforward C++ interpreter, but does not provide any timing accuracy. Due to its simplicity, the PFA implementation required only a few weeks of implementation effort and less than 1000 LoC. With Spike, software development was able to proceed concurrently with the concrete hardware design.  Furthermore, unit tests developed under Spike were used to validate the hardware implementation, reducing debugging effort. In all, the only software change that was needed to go from Spike to a concrete implementation was one extra TLB flush due to a difference in TLB design between Spike and the RISC-V implementation we used.
+In order to accelerate software development, and to provide a golden-model of
+PFA behavior, I implemented the PFA first in a RISC-V ISA simulator called
+"Spike"\cite{spike}. Spike provides a functional simulation of a RISC-V core
+through a straightforward C++ interpreter, but does not provide any timing
+accuracy. Due to its simplicity, the PFA implementation required only a few
+weeks of implementation effort and less than 1000 LoC. With Spike, software
+development was able to proceed concurrently with the concrete hardware design.
+Furthermore, unit tests developed under Spike were used to validate the
+hardware implementation, reducing debugging effort. In all, the only software
+change that was needed to go from Spike to a concrete implementation was one
+extra TLB flush due to a difference in TLB design between Spike and the RISC-V
+implementation we used.
 
-\subsection{Concrete Implementation}
-The PFA was implemented in the Chisel hardware construction language\cite{chisel} and integrated with a simple in-order CPU called RocketCore\cite{rocketCore}. The components were integrated using the RocketChip system-on-chip (SoC) generator\cite{rocketChip}. The hardware implementation of this system involved a large number of contributors and is not the main focus of this thesis\todo{How should I properly cite other contributors and make clear that this work was not done by me?}. I provide here an overview of a few relevant subsystems.
-
+\subsection{Hardware Implementation}
+The PFA was implemented in the Chisel hardware construction
+language\cite{chisel} and integrated with a simple in-order CPU called
+RocketCore\cite{rocketCore}. The components were integrated using the
+RocketChip system-on-chip (SoC) generator\cite{rocketChip}. I provide an
+overview of the relevant systems in the following sections. The current PFA
+prototype implements a subset of the specification described in
+section \ref{sec:pfaDesign}. Specifically, it does not support multiple
+simultaneous evictions (the EvictQ has an effective depth of 1), however, it
+does allow for asynchronous eviction. The current prototype also does not
+support the full memory blade specification. Instead, it sends a simplified form
+of packet header with only opcode and transaction ID. It also does not use a
+write acknowledgment (the OS must rate-limit writes to avoid overwhelming the
+memory blade).
+ 
 \subsubsection{RocketCore and RocketChip}
-RocketChip is a framework for generating SoCs. It includes on-chip interconnects, caches, and other utilities for chip construction. While the CPU is pluggable, we use only the RocketCore in-order CPU for our experiments. Our implementation used dedicated 16KB instruction and data caches\todo{I hope to run experiments with an L2 in the future}. 
+RocketChip\cite{rocketChip} is a framework for generating SoCs. It includes on-chip
+interconnects, caches, and other utilities for chip construction. While the CPU
+is pluggable, we use only a single RocketCore in-order CPU for our experiments. Our
+implementation used dedicated 16KB instruction and data caches\todo{I hope to
+run experiments with an L2 in the future}. While the node had access to several
+gigabytes of main memory, we artificially limited application memory using
+Linux cgroups (see section \ref{sec:eval} for details).
 
-\subsubsection{PFA Implementations}
+\subsubsection{Memory Blade}
+The memory blade that is used by the PFA was implemented as a bare-metal C
+program running on a RocketCore-based compute node. This memory blade is
+connected to the same network as our PFA-enabled compute node and traverses a
+simple switch in order to communicate. The current implementation uses a simple
+protocol in lieu of a full ethernet stack. 
 
-\subsection{Linux Integration} \label{sec_linuxImpl}
+\subsubsection{FireSim}
+We simulated the RTL using a cycle-accurate simulator called
+"FireSim"\cite{firesim}. FireSim is an FPGA-accelerated simulator that runs on
+the Amazon cloud. It can simulate thousands of nodes with a cycle-accurate
+network and heterogenous components.  Many parameters of the simulation are
+tuneable within FireSim. We decided on a 200Gbps network with 2us link latency,
+leading to roughly 8us page access time to the memory blade. The network is
+in-order and reliable. \todo{figure out DRAM parameters}
+
+\subsection{Linux Integration} \label{sec:linuxImpl}
     \input{tex/linuxDesign.tex}
