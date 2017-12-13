@@ -295,3 +295,55 @@ year = {2015}
   year={2017},
 }
 
+@misc{linux_numa,
+  title={{What is Linux Memory Policy?}},
+  howpublished= "\url{https://www.kernel.org/doc/Documentation/vm/numa_memory_policy.txt}",
+  year={2017}
+}
+
+@inproceedings{NOW,
+ author = {Anderson, T. E. and Culler, D. E. and Patterson, D. A.},
+ title = {The Berkeley Networks of Workstations (NOW) Project},
+ booktitle = {Proceedings of the 40th IEEE Computer Society International Conference},
+ series = {COMPCON '95},
+ year = {1995},
+ isbn = {0-8186-7029-0},
+ pages = {322--},
+ url = {http://dl.acm.org/citation.cfm?id=527213.793599},
+ acmid = {793599},
+ publisher = {IEEE Computer Society},
+ address = {Washington, DC, USA},
+ keywords = {Berkeley Networks of Workstations, NOW Project, custom low latency network interface, desktop computers, global layer operating system, local area networks, network interfaces, network operating systems, operating systems (computers), switch based local area networks, workstations},
+} 
+
+@techreport{RoCE,
+  title={{RoCE in the Data Center}},
+  institution={Mellanox},
+  year={2014},
+  month={October},
+  url={http://www.mellanox.com/related-docs/whitepapers/roce_in_the_data_center.pdf}
+}
+
+@techreport{RFC5040,
+  author = {R. Recio and B. Metzler and P. Culley and J. Hilland and D. Garcia},
+  title = {A Remote Direct Memory Access Protocol Specification},
+  howpublished = {Internet Requests for Comments},
+  type = {RFC},
+  number = {5040},
+  year = {2007},
+  month = {October},
+  issn = {2070-1721},
+  publisher = {RFC Editor},
+  institution = {RFC Editor},
+}
+
+@techreport{vls,
+    Author = {Cook, Henry and Asanović, Krste and Patterson, David A.},
+    Title = {Virtual Local Stores: Enabling Software-Managed Memory Hierarchies in Mainstream Computing Environments},
+    Institution = {EECS Department, University of California, Berkeley},
+    Year = {2009},
+    Month = {Sep},
+    URL = {http://www2.eecs.berkeley.edu/Pubs/TechRpts/2009/EECS-2009-131.html},
+    Number = {UCB/EECS-2009-131},
+    Abstract = {Software-managed local stores have proven to be more efficient than hardware-managed caches for some important applications, yet their use has been mostly confined to embedded systems that run a small set of applications in a limited runtime environment.  Local stores are problematic in general-purpose systems because they add to process state on context switches, and because they require fast data memory close to the processor that might be better spent on cache for some applications.  We introduce virtualized local stores as a mechanism to provide the benefits of a software-managed memory hierarchy in a general-purpose system. A virtual local store (VLS) is mapped into the virtual address space of a process and backed by physical main memory, but is stored in a partition of the hardware-managed cache when active.  This reduces context switch cost, and allows VLSs to migrate with their process thread.  The partition allocated to the VLS can be rapidly reconfigured without flushing the cache, allowing programmers to selectively use VLS in a library routine with low overhead.}
+}

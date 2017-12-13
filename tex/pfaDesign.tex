@@ -2,7 +2,7 @@ The primary interface to the PFA is through a number of memory-mapped queues:
 \gls{freeq}, \gls{newq}, and \gls{evictq}. The \gls{freeq} contains unused page frames that the PFA can
 use for fetching new pages, the \gls{newq} reports any recently fetched pages to the
 OS bookkeeping thread, and the \gls{evictq} contains a list of local pages that
-should be stored in remote memory. Using these queues, execution procedes as
+should be stored in remote memory. Using these queues, execution proceeds as
 follows:
 
 \begin{outline}[enumerate]
@@ -26,7 +26,7 @@ follows:
       necessary bookkeeping.
 \end{outline}
 
-In addition to the three main queues, there are a number of other maintenence
+In addition to the three main queues, there are a number of other maintenance
 registers that are used for querying queue status and initializing the PFA. See
 appendix \ref{apx:spec} for a complete specification. I will mention one status
 register here; the EVICT\_STAT register. When a page is placed on the evict
@@ -66,7 +66,7 @@ The PFA uses a special PTE format for remote pages (figure
 
 \begin{figure}[h]
   \centering
-  \begin{bytefield}[endianness=big,bitwidth=0.017\linewidth]{64}
+  \begin{bytefield}[endianness=big,bitwidth=0.016\linewidth]{64}
     \bitheader{0, 1, 2, 12, 40, 63} \\
     \bitbox{24}{Unused} & \bitbox{28}{Page ID} & \bitbox{10}{Prot} &
     \bitbox{1}{\tiny R} & \bitbox{1}{\tiny V} \\
@@ -87,13 +87,13 @@ and debugging (see section \ref{sec:linuxImpl}).
 
 \subsubsection{Remote Memory Protocol}
 When the PFA receives a request for a remote page from the PTW, it must
-communicate with a remote \gls{memory blade} to retreive the appropriate data. It
+communicate with a remote \gls{memory blade} to retrieve the appropriate data. It
 does this through a custom network protocol. This involves forming network
 packets and interfacing with the NIC. For this project we assume an
 ethernet-based network with a \gls{mtu} of \SI{1500}{\byte}.
 Figures \ref{fig:write_protocol} and \ref{fig:read_protocol} show the basic
-operation of the protocol. See appendix \ref{apx:spec} for a detailed
-description of this protocol. Note that due to the \gls{mtu}, each page takes 3
+operation of the protocol. See appendix \ref{apx:memblade_spec} for a detailed
+description of these packet types. Note that due to the \gls{mtu}, each page takes 3
 packets to transfer. We handle potentially out-of-order packets by attaching
 sequence numbers and transaction IDs to each packet. We do, however, assume a
 reliable network that never drops packets.

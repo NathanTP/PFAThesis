@@ -1,15 +1,15 @@
 Traditional datacenter design aggregates all necessary resources (e.g. disk,
-memory, power supply, etc.) into many self contained server chasis. This design
+memory, power supply, etc.) into many self contained server chassis. This design
 was motivated by the ability to leverage commodity PC components and
-networks\todo{cite Berkeley NOW?}.  Additionally, an aggregated design was
-desirable because in-chasis interconnects were significantly faster than
+networks\cite{NOW}.  Additionally, an aggregated design was
+desirable because in-chassis interconnects were significantly faster than
 networks. However, datacenter-side compute has grown into an important
 independent market, leading to specialized server platforms and networks (often
 called a \gls{wsc}).  Furthermore, networking technology
 has seen a rapid increase in performance, with 40Gbps ethernet becoming
 commonplace, and 100+ Gbps networks readily available. Workloads have also
-changed; applications are fundementally distributed (e.g. service-oriented
-architecture\todo{SOA citation?}, map-reduce\todo{map-reduce citation?},
+changed; applications are fundamentally distributed (e.g. service-oriented
+architecture, map-reduce,
 etc.), use larger and rapidly changing datasets (``Big Data''), and demand
 latencies that can only be delivered by in-memory processing.
 
@@ -34,7 +34,7 @@ recently proposed using paging over \gls{rdma} as a way of disaggregating
 memory\cite{infiniswap}\cite{osdidisag}. Paging has traditionally been backed
 by slow disks with access latencies in the milliseconds. This lead to
 sophisticated algorithms that can take several microseconds for every cache
-miss. An alternative is to have fully hardware manged DRAM
+miss. An alternative is to have fully hardware managed DRAM
 caches\cite{volos_DRAM}\cite{lee_tagless}. These eliminate much of the
 overhead, but lack the sophistication and application-level insight of OS-based
 approaches. For example, operating systems often use significant memory for

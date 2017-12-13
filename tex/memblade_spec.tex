@@ -1,0 +1,115 @@
+\subsubsection{Ethernet header}
+
+\begin{tabular}{ | l | l | l | l | }
+\hline
+Field (Size in Bytes) & Bits & Values & Description \\
+\hline\hline
+src\_mac (6) & & & \\ \hline
+dst\_mac (6) & & & \\ \hline
+ethertype (2) & & & \\ \hline
+vlan\_id (2) & & Optional - set if previous ethertype is 0x8100 & \\ \hline
+ethertype (2) & & Optional - carries inner ethertype if vlan tag present & \\ \hline
+\end{tabular}
+
+\subsection{Request Packet}
+\begin{tabular}{ | l | l | l | l | }
+\hline
+Field (Size in Bytes) & Bits & Values & Description \\
+\hline\hline
+version (1) & & 0x1 - draft & Protocol version \\ \hline
+
+op\_code (1) & &
+\begin{tabular} { l }
+0x0 - page read \\
+0x1 - page write \\
+0x2 - word read \\
+0x3 - word write \\
+0x4 - atomic add \\
+0x5 - compare and swap
+\end{tabular} & Operation identifier \\ \hline
+
+part\_id (1) & & & Message part number \\ \hline
+
+reserved (1) & & & \\ \hline
+
+transact\_id (4) & & & Transaction ID \\ \hline
+
+page\_num (8) & & & \\ \hline
+
+payload & & & \\
+
+Page Read (0) & & & \\
+
+Page Write (1368/1368/1360) & & & \\
+
+Word Read (8) & & & \\
+
+Word Write (16) & & & \\
+
+Atomic Add (16) & & & \\
+
+CAS (24) & & & \\
+\hline
+\end{tabular}
+
+\subsection{Atomic/Small Payload}
+\begin{tabular}{ | l | l | l | l | }
+\hline
+Field (Size in Bytes) & Bits & Values & Description \\
+\hline\hline
+offset + disable + size (2) &
+	\begin{tabular} { l }
+	15-4 offset \\
+	3-2   reserved \\ 
+	1-0   size \\
+	\end{tabular} & 
+	\begin{tabular} { l }
+	For size: \\
+	0 - 8 bits \\
+	1 - 16 bits \\
+	2 - 32 bits \\
+	3 - 64 bits \\
+	\end{tabular} &
+Offset within page + Log2 of size in bytes \\ \hline
+
+Reserved (6) & & & \\ \hline
+
+arg0 (8) & & & The data to swap/add \\ \hline
+
+arg1 (8) & & & The data to compare \\ \hline
+\hline
+\end{tabular}
+
+\subsection{Response Packet}
+
+\begin{tabular}{ | l | l | l | l | }
+\hline
+Field (Size in Bytes) & Bits & Values & Description \\
+\hline\hline
+
+version (1) & & 0x1 - draft & Protocol version \\ \hline
+
+resp\_code (1) & &
+\begin{tabular} { l }
+	0x80 - success w/ page  \\
+	0x81 - success w/o data \\
+	0x82 - success w/ word  \\
+	>= 0x83 - error \\
+\end{tabular} &
+Response code \\ \hline
+
+part\_id (1) & & & Message part number \\ \hline
+
+reserved (1) & & & \\ \hline
+
+transact\_id (4) & & & Transaction ID \\ \hline
+
+\begin{tabular}{l}
+	payload \\
+	w/ page (1368/1368/1360) \\
+	w/ word (8) \\
+\end{tabular} &
+& & \\ \hline
+
+\end{tabular}
+

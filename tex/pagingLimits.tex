@@ -1,6 +1,6 @@
 It is important to note that the majority of time in demand paging occurs in
 operating system software running in the page-fault handler. The OS must walk
-the page tables, lookup per-page metadata in internal datastructures, and
+the page tables, lookup per-page metadata in internal data structures, and
 allocate a new frame, among other \gls{bookkeeping} tasks (see section
 \ref{sec:linuxImpl} for more details on this process). Our experiments on a
 modern x86-based platform found that this processing can take anywhere from
@@ -23,7 +23,7 @@ oversubscription refers to the percent of peak memory that was stored remotely.}
 \end{figure}
 
 Figure \ref{fig:paging_overhead} plots the results of this experiment. Some
-applications (such as quicksort or tensorflow) have good locality and therefor
+applications (such as quicksort or Tensorflow) have good locality and therefor
 experience relatively little impact from paging (although even these
 applications see slowdowns of as much as 40\%). However, applications with
 poor locality (such as Java or linpack) can experience significant slowdowns

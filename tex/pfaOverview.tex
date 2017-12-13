@@ -3,7 +3,7 @@ need to occur in order for the application thread to make progress. For
 example, allocating free frames or updating page metadata could be performed at
 any time. Other tasks may be more efficient in hardware than in the OS; the
 walking of page-tables for example. We propose a hardware accelerator that
-performs only the bare-minimum of coppying a remote page into a pre-allocated
+performs only the bare-minimum of copying a remote page into a pre-allocated
 frame, updating the relevant PTE, and restarting the application (figure
 \ref{fig:pfa_generic}).
 
@@ -26,7 +26,7 @@ cache locality and amortizes context switch overheads.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.9\columnwidth]{figs/bookkeeping_timeline.pdf}
+    \includegraphics[width=\columnwidth]{figs/bookkeeping_timeline.pdf}
     \vspace{-5mm}
     \caption{Timeline of page-fault processing with and without the PFA}
     \label{fig:bookkeeping_timeline}

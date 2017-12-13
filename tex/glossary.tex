@@ -21,7 +21,7 @@
   {SiP}
   {system in package}
   {A system where all the necessary components (NIC, cpu, memory)
-   are grouped into the same physical package (but not neccessarily on the same
+   are grouped into the same physical package (but not necessarily on the same
    chip)}
 
 \newglossaryentry{paging}
@@ -94,7 +94,7 @@ translations from virtual to physical addresses.}
 
 \newdualentry{tlb}
   {TLB}
-  {translation lookaside buffer}
+  {translation look-aside buffer}
   {A cache of virtual to physical address translations.}
 
 \newdualentry{ptw}
@@ -199,8 +199,8 @@ information on where to locate an evicted page.}
 \newglossaryentry{kpfad}
 {
   name={kpfad},
-  description={A background daemon that oppurtunistically performs bookkeeping
-  and maintenence for the PFA.}
+  description={A background daemon that opportunistically performs bookkeeping
+  and maintenance for the PFA.}
 }
 
 \newglossaryentry{kswapd}
@@ -209,3 +209,14 @@ information on where to locate an evicted page.}
   description={A background kernel thread that opportunistically performs
     bookkeeping.}
 }
+
+\newglossaryentry{task}
+{
+  name={task},
+  description={Linux kernel internal abstraction of a process.}
+}
+
+\newdualentry{lru}
+  {LRU}
+  {least recently used}
+  {An algorithm that attempt to pick pages that have not been used recently.}

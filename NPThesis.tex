@@ -4,18 +4,8 @@
 \input{tex/environ}
 \input{tex/glossary}
 
-\title{Master's Thesis}
-\author{
-        Nathan Pemberton \\
-                Department of Computer Science \\
-                University of California at Berkeley
-}
-\date{\today}
-
 \begin{document}
-\maketitle
-
-\newpage
+\includepdf{titlepage.pdf}
 
 \input{tex/abstract}
 
@@ -47,8 +37,14 @@
 \section{Evaluation} \label{sec:eval}
     \input{tex/results.tex}
             
+\section{Future Work} \label{sec:future}
+    \input{tex/future.tex}
+
 \section{Conclusion} \label{sec:conclusion}
     \input{tex/conclusion.tex}
+
+\section*{Acknowledgements}
+  \input{tex/acknowledgment.tex}
 
 \listoftodos
 
@@ -56,8 +52,10 @@
 \begin{appendices}
   \section{Reproducibility} \label{apx:reproduce}
   \input{tex/reproduce.tex}
-  \section{PFA Specification} \label{apx:spec}
-  \input{tex/spec.tex}
+  \section{PFA Specification} \label{apx:pfa_spec}
+  \input{tex/pfa_spec.tex}
+  \section{Memory Blade Protocol} \label{apx:memblade_spec}
+  \input{tex/memblade_spec.tex}
 \end{appendices}
 
 \clearpage

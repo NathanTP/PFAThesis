@@ -7,20 +7,20 @@ platforms have exposed the concept of remote memory.
 \subsubsection{Low-Level Interfaces}
 \Gls{numa} architectures partition memory resources
 accross several compute nodes such that memory is always local to exactly one
-compute resource, but still directly addressible by the others. In this case,
+compute resource, but still directly addressable by the others. In this case,
 all memory has the same interface (loads and stores from CPUs), but some is
 faster than others (non-uniform). Some \gls{numa} systems include hardware services
 to aid in page migration to mitigate this effect\cite{sgi_origin}.
 
 \gls{rdma} systems are similar to NUMA in that memory
 resources are partitioned among several compute nodes (memory is always local
-to someone). The difference is that while NUMA systems typically expose a
+to someone)\cite{RoCE}\cite{RFC5040}. The difference is that while NUMA systems typically expose a
 cache-coherent load-store interface to both local and remote memory resources,
 \gls{rdma} uses a special put/get interface to access remote memory resources.
 Typically, this service is provided through the network interface and managed
 by software. This interface allows RDMA systems to scale beyond what is
 possible in NUMA systems, at the cost of remote memory access performance and a
-more complex interface to applications.\todo{cite RDMA?}
+more complex interface to applications.
 
 Finally, a new class of interface has been recently introduced; the
 memory-semantic fabric. A memory-semantic fabric abstracts memory into a simple
@@ -38,7 +38,7 @@ to applications. In this case, the OS manages mappings from virtual to physical
 addresses while hardware uses those mappings to automatically route loads and
 stores to the appropriate memory resources. The OS is also responsible for choosing which NUMA domain to
 allocate memory from. This can be a complex decision and much effort has gone
-into studying such allocation policies\todo{cite NUMA placement algos?}.
+into studying such allocation policies\cite{linux_numa}.
 
 RDMA systems are further divorced from specific hardware interfaces and enjoy
 a great diversity of interfaces. Some programming languages use a partitioned global
