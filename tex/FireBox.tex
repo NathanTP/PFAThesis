@@ -1,17 +1,17 @@
-While there are several proposals for disaggregated WSCs, we will use the
+While there are several proposals for a disaggregated \acrlong{wsc}, we will use the
 Firebox\cite{firebox} project as an example throughout this thesis (see Figure
-\ref{fig:fb_diagram}).
+\ref{fig:fb_diagram}). The Firebox proposal incorporates ideas from several academic and industrial projects and is representative of disaggregated \glspl{wsc} in general.
 
 \begin{figure}
     \centering
     \includegraphics[width=0.9\columnwidth]{figs/FBDiagram.pdf} \label{fig:fb_diagram}
     \vspace{-5mm}
-    \caption{The Firebox WSC}
+    \caption{The Firebox WSC proposal. Compute and memory resources become first-class citizens over a high-radix network, allowing flexible resource allocation and scaling. Lower-speed peripherals (such as disk or wide-area networking} can be connected farther away in the network topology.
 \end{figure}
 
-Firebox proposes using high-bandwidth, high-radix, silicon photonic networks to
-connect compute, memory, and storage nodes in a WSC. Silicon photonic network
-interfaces can be integrated directly into the SiPs, minimizing pin-out and
+Firebox proposes using high-bandwidth, high-radix, networks to
+connect compute, memory, and storage nodes in a WSC. Firebox does not dictate any particular networking technology, but is motivated by emerging integrated silicon photonic network
+interfaces because they can be integrated directly on-die (or on package, e.g., \gls{sip}), minimizing pin-out and
 providing high bandwidth at low power. By multiplexing many wavelengths onto a
 single fiber (wave-division multiplexing), it is possible to create a very high
 fanout while using few physical interfaces. This fanout may enable very high

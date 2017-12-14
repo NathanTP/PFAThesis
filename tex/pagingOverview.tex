@@ -46,7 +46,7 @@ Figure \ref{fig:generic_paging_flow} shows a flow chart for translating a page:
     \centering
     \includegraphics[width=0.9\columnwidth]{figs/generic_paging.pdf}
     \vspace{-5mm}
-    \caption{Flow chart for virtual to physical address lookup.}
+    \caption{Flow chart for virtual to physical address look up in a typical virtual memory system. The translation look aside buffer (TLB) caches translations. The page-table walker (PTW) fetches mappings from main memory when the TLB misses. Most mappings are valid and can be returned directly to the CPU, but invalid mappings result in a trap to the OS.}
     \label{fig:generic_paging_flow}
 \end{figure}
 

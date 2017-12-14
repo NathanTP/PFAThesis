@@ -2,7 +2,7 @@
     \centering
     \includegraphics[width=0.9\columnwidth]{figs/generic_pfa.pdf}
     \vspace{-5mm}
-    \caption{Paging with the PFA}
+    \caption{Paging with the PFA. Instead of an invalid PTE causing a trap to the OS (as in figure \ref{fig:generic_paging}), invalid pages are passed to the PFA to be fetched from remote memory. The PFA may still cause a trap if it cannot handle the request (e.g., full queues).}
     \label{fig:pfa_generic}
 \end{figure}
 
@@ -28,7 +28,7 @@ cache locality and amortizes context switch overheads.
     \centering
     \includegraphics[width=\columnwidth]{figs/bookkeeping_timeline.pdf}
     \vspace{-5mm}
-    \caption{Timeline of page-fault processing with and without the PFA}
+    \caption{Timeline of page-fault processing with and without the PFA. Without the PFA, the OS must be invoked on every page miss and perform various data structure look ups to decide how to handle the fault. The PFA allows this bookkeeping to occur any time after the fetch in a separate kernel thread. Only the actual page read must occur before the application can be restarted.}
     \label{fig:bookkeeping_timeline}
 \end{figure}
 
