@@ -35,10 +35,10 @@
   \end{figure}
   \FloatBarrier
 
-  Both applications were tuned to use 64MB of memory at their peak. We then
+  Both applications use 64MB of memory at their peak. We then
   varied the cgroup memory limit from 100\% (64MB) down to 25\% (16MB),
-  triggering increasing levels of paging. For both benchmarks, the PFA
-  significantly reduces the overhead (by up to 1.4x).
+  triggering increasing levels of paging. For both benchmarks, the PFA reduces
+  end to end runtime by up to 1.4x.
 
 \subsubsection{Analysis}
   We now analyze the sources of this performance improvement.
@@ -62,7 +62,7 @@
     blade.
   \end{outline}
 
-  Recall from section \ref{sec:pfa} (and figure \ref{fig:bookkeeping_timeline}
+  Recall from Section \ref{sec:pfa} (and Figure \ref{fig:bookkeeping_timeline}
   in particular) that the PFA moves some of this processing (especially
   \textbf{Proc}) to an independent kernel thread; we account for this in a
   later section. 
@@ -85,7 +85,7 @@
   fetch time. This effect will be even more pronounced as network and memory
   blade performance improves. For example, if \textbf{MemBlade} time were
   reduced to \SI{1129}{\nano\second} to simulate a \SI{1}{\tera\bit\per\second}
-  link with \SI{1}{\micro\second} round-trip latency (as predicted in section
+  link with \SI{1}{\micro\second} round-trip latency (as predicted in Section
   \ref{sec:firebox} for photonic networks), then client-side processing would
   account for 83\% of time in SW but only 23\% of time with the PFA. Finally,
   note that the \textbf{NIC} time in software is larger than the total time in
@@ -102,17 +102,18 @@
   application when it restarts.
 
   \paragraph{Total Page Faults}
-  One key function of the PFA is to reduce the number of page faults due
-  to paging. Figure \ref{fig:pfa_swapfault} shows the number of paging-related
+  One key function of the PFA is to reduce the number of page faults due to
+  paging. Figure \ref{fig:pfa_swapfault} shows the number of paging-related
   faults each benchmark experiences as a fraction of total faults. The first
   thing to note is that the number paging-related faults decreases by
-  approximately 64 when the PFA is used (as expected with PFA queue sizes set
-  to 64). However, these only account for
-  45\% of faults, even in the worst-case (our simplest benchmark, Qsort) with
-  25\% local memory. The more complex Gen benchmark has even fewer
-  paging-related faults (as a fraction of total). While there are certainly
-  some savings due to fewer kernel crossings, they are not frequent nor long enough to
-  explain all the performance benefits we see end-to-end.
+  approximately 64 when the PFA is used. This is because the PFA interrupts the
+  OS to perform bookkeeping only when its queues are full (every 64 fetches in
+  this experiment). However, these only account for 45\% of faults, even in the
+  worst-case (our simplest benchmark, Qsort) with 25\% local memory. The more
+  complex Gen benchmark has even fewer paging-related faults (as a fraction of
+  total). While there are certainly some savings due to fewer kernel crossings,
+  they are not frequent nor long enough to explain all the performance benefits
+  we see end-to-end.
  
   \begin{figure}[h] \centering
     \includegraphics[width=0.7\columnwidth]{figs/swapfault.png}

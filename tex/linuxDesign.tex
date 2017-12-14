@@ -22,7 +22,7 @@ the kernel attempts to free task-assigned memory. It will first attempt to
 shrink any file caches (especially clean disk blocks that can simply be deleted
 without requiring any disk activity). If shrinking caches is not enough, the
 kernel begins to page non-file backed pages (called ``\glspl{anonpg}''). This
-is done using a psuedo-\gls{lru} eviction algorithm (step 2 in figure
+is done using a psuedo-\gls{lru} eviction algorithm (step 2 in Figure
 \ref{fig:vanilla_evict}). Page reclaiming can be triggered
 in one of two ways (step 1). If a hard memory limit is met, but more memory is needed to
 proceed, then page-reclaiming happens synchronously (called direct reclaim).
@@ -41,7 +41,7 @@ its hard limit).
 
 \paragraph{Page Eviction}
 Paging was originally intended to use hard disks as backing store, and this is
-reflected in the design of paging in Linux. In order to swap, one or more block
+reflected in the design of paging in Linux. To swap, one or more block
 devices must be formatted and mounted as swap devices. Linux then uses the
 blockID on this disk as a unique identifier for an evicted page (step 3). In
 order to support more complex paging schemes (such as page compression, or
@@ -71,7 +71,7 @@ background (step 5).
 
 When a user program attempts to access a page that has been swapped out, the
 \gls{ptw} notices the invalid PTE and issues a page fault trap to the OS (step
-1 in figure \ref{fig:vanilla_fetch}). Note that the hardware does not examine
+1 in Figure \ref{fig:vanilla_fetch}). Note that the hardware does not examine
 the remaining bits (the \gls{swpent} is purely a software construct). Upon
 receiving a page fault, Linux first determines if the requested virtual address
 has been assigned to this task. It does this by iterating through regions of
@@ -97,7 +97,7 @@ application.
 \FloatBarrier 
 \subsubsection{PFA Modifications}
 The introduction of a PFA changes a number of the assumptions underlying
-vanilla paging behavior. Figure \ref{fig:linux_changes} summarizes these
+baseline paging behavior. Figure \ref{fig:linux_changes} summarizes these
 changes.
 
 \begin{figure}[h] \centering
@@ -125,7 +125,7 @@ between page fetch and bookkeeping.
 
 Under these simplifying assumptions, we are able to allocate frames
 proactively. The current implementation always refills the \gls{freeq} during
-bookkeeping. In order to simplify the bookkeeping procedure, we track
+bookkeeping. To simplify the bookkeeping procedure, we track
 each allocated frame in a FIFO. This allows the bookkeeping code to simply pop
 this FIFO to find which frame was used for each new page (the PFA always drains
 the \gls{freeq} in FIFO order). Furthermore, this FIFO allows for aggressive
@@ -161,7 +161,7 @@ this problem we make a number of simplifying assumptions.
 		ID. This is achieved by making the ramfs sufficiently large to address all
 		swap activity.
 	\1 \textbf{Block IDs are contiguous on the integers $\mathbf{(0, 2^{28}]}$.}
-		This allows us to pack the block ID into the remote PTE format (see section
+		This allows us to pack the block ID into the remote PTE format (see Section
 		\ref{sec:remPTE}). We achieve this by ensuring that the ramfs is the same
 		size as our memory blade (and less than $2^{28}$ pages). Since block IDs
 		correspond to physical offsets on the swap device, we are guaranteed to

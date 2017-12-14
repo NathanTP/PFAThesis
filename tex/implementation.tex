@@ -5,7 +5,7 @@ Linux 4.13 with a Buildroot generated user
 space.
 
 \subsection{PFA Reference Implementation}
-In order to accelerate software development, and to provide a golden-model of
+To accelerate software development, and to provide a golden-model of
 PFA behavior, I implemented the PFA first in a RISC-V ISA simulator called
 "Spike"\cite{spike}. Spike provides a functional simulation of a RISC-V core
 through a straightforward C++ interpreter, but does not provide any timing
@@ -21,25 +21,31 @@ implementation we used.
 \subsection{Hardware Implementation}
 The PFA was implemented in the Chisel hardware construction
 language\cite{chisel} and integrated with a simple in-order CPU called
-RocketCore\cite{rocketCore}. The components were integrated using the
-RocketChip system-on-chip (SoC) generator\cite{rocketChip}. I provide an
+RocketCore\cite{rocketchip}. The components were integrated using the
+RocketChip system-on-chip (SoC) generator\cite{rocketchip}. I provide an
 overview of the relevant systems in the following sections. The current PFA
-prototype implements a subset of the specification described in
-section \ref{sec:pfaDesign}. Specifically, it does not support multiple
-simultaneous evictions (the EvictQ has an effective depth of 1), however, it
-does allow for asynchronous eviction. The current prototype also does not
-support the full memory blade specification. Instead, it sends a simplified form
-of packet header with only opcode and transaction ID. It also does not use a
-write acknowledgment (the OS must rate-limit writes to avoid overwhelming the
-memory blade).
+prototype implements a subset of the specification described in Section
+\ref{sec:pfaDesign}. Specifically, it does not support multiple simultaneous
+evictions (the EvictQ has an effective depth of 1), however, it does allow for
+asynchronous eviction. This prevents optimizations such as switching to other
+threads while many pages are simultaneously evicted (a single eviction does not
+take long enough to justify a context switch). The current prototype also does
+not support the full memory blade specification. In particular, it does not
+implement ethernet headers which limits experiments to a single client/memory
+pair over a static network route. Instead, it sends a simplified form of packet
+header with only opcode and transaction ID. It also does not use a write
+acknowledgment, this means the OS must rate-limit writes to avoid overwhelming
+the memory blade. Without back-pressure, this rate-limiting must be
+pessimistic.  However, the rate-limit only effects evictions which tend to
+occur slowly over time.
  
 \subsubsection{RocketCore and RocketChip}
-RocketChip\cite{rocketChip} is a framework for generating SoCs. It includes
+RocketChip\cite{rocketchip} is a framework for generating SoCs. It includes
 on-chip interconnects, caches, and other utilities for chip construction. While
 the CPU is pluggable, we use only a single RocketCore in-order CPU for our
 experiments. Our implementation used dedicated 16KB instruction and data
 caches. While the node had access to several gigabytes of main memory, we
-artificially limited application memory using Linux cgroups (see section
+artificially limited application memory using Linux cgroups (see Section
 \ref{sec:eval} for details).
 
 \subsubsection{Memory Blade}

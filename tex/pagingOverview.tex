@@ -7,7 +7,7 @@ architecture version 1.10\cite{riscv_priv110}), and Linux version
 With virtual memory, the addresses issued through load and store instructions
 do not directly correspond with physical address on the memory bus. Instead,
 they are translated to physical addresses through a data structure called the
-\gls{pgtbl} (see figure \ref{fig:generic_paging}).  Page tables contain
+\gls{pgtbl} (see Figure \ref{fig:generic_paging}).  Page tables contain
 translations for fixed-sized ranges of memory called \glspl{page} (\SI{4}{\kibi\byte}
 in RISC-V). In addition to translations, each \gls{pte} contains meta-data about the page such as read/write permissions, page
 validity, and whether the page has been read or written to recently (called
@@ -56,7 +56,7 @@ memory through the page-fault mechanism. For example, new virtual memory
 allocations in Linux do not get physical addresses assigned immediately.
 Instead, the OS protects all reads and writes to the page, and only allocates
 memory if and when the process actually attempts to use it (virtual address 0x4
-in figure \ref{fig:generic_paging} for example). This saves considerable memory
+in Figure \ref{fig:generic_paging} for example). This saves considerable memory
 allocation overheads when processes allocate more memory than they actually use
 (a fairly common occurrence). Another technique, called paging, creates the
 appearance of unlimited memory by transparently moving pages to an external
@@ -64,5 +64,5 @@ storage device (such as a hard disk) and bringing them back only when accessed.
 This effectively turns main memory into a software-managed cache for the
 external storage device. It does this by marking the evicted pages as
 ``invalid'', and storing their location on the storage device in the PTE. For
-example in figure \ref{fig:generic_paging}, virtual pages 0x1 and 0x6 are
+example in Figure \ref{fig:generic_paging}, virtual pages 0x1 and 0x6 are
 currently stored on an external storage device at index 1 and 2, respectively.

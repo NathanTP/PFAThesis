@@ -297,7 +297,7 @@ year = {2015}
 
 @misc{linux_numa,
   title={{What is Linux Memory Policy?}},
-  howpublished= "\url{https://www.kernel.org/doc/Documentation/vm/numa_memory_policy.txt}",
+  howpublished="\url{https://www.kernel.org/doc/Documentation/vm/numa_memory_policy.txt}",
   year={2017}
 }
 
@@ -346,4 +346,81 @@ year = {2015}
     URL = {http://www2.eecs.berkeley.edu/Pubs/TechRpts/2009/EECS-2009-131.html},
     Number = {UCB/EECS-2009-131},
     Abstract = {Software-managed local stores have proven to be more efficient than hardware-managed caches for some important applications, yet their use has been mostly confined to embedded systems that run a small set of applications in a limited runtime environment.  Local stores are problematic in general-purpose systems because they add to process state on context switches, and because they require fast data memory close to the processor that might be better spent on cache for some applications.  We introduce virtualized local stores as a mechanism to provide the benefits of a software-managed memory hierarchy in a general-purpose system. A virtual local store (VLS) is mapped into the virtual address space of a process and backed by physical main memory, but is stored in a partition of the hardware-managed cache when active.  This reduces context switch cost, and allows VLSs to migrate with their process thread.  The partition allocated to the VLS can be rapidly reconfigured without flushing the cache, allowing programmers to selectively use VLS in a library routine with low overhead.}
+}
+
+@techreport{sgiUV,
+  title={SGI UV 3000, UV 30: Big Brains for No-Limit Computing},
+  Institution={Silicon Graphics International Corp.},
+  year={2016},
+  howpublished={https://www.sgi.com/pdfs/4555.pdf}
+}
+
+@misc{ib_perf,
+  title={EDR InfiniBand},
+  Institution={Mellanox Technologies},
+  year={2015},
+  note={11th Annual OpenFabrics Alliance Workshop},
+  howpublished="\url{https://www.openfabrics.org/images/eventpresos/workshops2015/UGWorkshop/Friday/friday_01.pdf}"
+}
+
+@techreport{ib_ref_design,
+  title={Deploying HPC Cluster with Mellanox InfiniBand Interconnect Solutions},
+  howpublished="\url{http://www.mellanox.com/related-docs/solutions/deploying-hpc-cluster-with-mellanox-infiniband-interconnect-solutions-archive.pdf}",
+  Institution={Mellanox Technologies},
+  year={2017}
+}
+
+@online{ccix,
+  title={CCIX Consortium},
+  url={https://www.ccixconsortium.com}
+}
+
+@techreport{capi,
+  title={Coherent Accelerator Processor Interface (CAPI) for POWER8 Systems},
+  author={Bruce Wile},
+  Institution={IBM Systems and Technology Group},
+  howpublished="\url{https://www-304.ibm.com/webapp/set2/sas/f/capi/CAPI_POWER8.pdf}",
+  year={2014},
+  month={September}
+}
+
+@misc{spike,
+  title={RISC-V ISA Simulator},
+  author={Andrew Waterman, Yunsup Lee},
+  year={2017},
+  howpublished="\url{https://github.com/riscv/riscv-isa-sim}"
+}
+
+@inbook{chisel,
+    title={Chisel: constructing hardware in a scala embedded language},
+    booktitle={Proceedings of the 49th Annual Design Automation Conference},
+    publisher={ACM},
+    author={Bachrach, Jonathan and Vo, Huy and Richards, Brian and Lee, Yunsup and Waterman, Andrew and Avižienis, Rimas and Wawrzynek, John and Asanović, Krste},
+    year={2012},
+    pages={1216–1225}
+}
+
+@online{firesim,
+	title={Bringing Datacenter-Scale Hardware-Software Co-design to the Cloud with FireSim and Amazon EC2 F1 Instances},
+	author={Sagar Karandikar and Mia Champion},
+	note={AWS Compute Blog},
+	url={https://aws.amazon.com/blogs/compute/bringing-datacenter-scale-hardware-software-co-design-to-the-cloud-with-firesim-and-amazon-ec2-f1-instances/}
+}
+
+@book{linuxBook,
+ author = {Bovet, Daniel and Cesati, Marco},
+ editor = {Oram, Andy},
+ title = {Understanding the Linux Kernel, Second Edition},
+ year = {2005},
+ isbn = {978-0596005658},
+ edition = {3},
+ publisher = {O'Reilly \& Associates, Inc.},
+ address = {Sebastopol, CA, USA}
+} 
+
+@online{tmem,
+	title={Transcendent memory in a nutshell},
+	author={Dan Magenheimer},
+	year={2011},
+	url={https://lwn.net/Articles/454795/}
 }

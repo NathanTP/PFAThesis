@@ -28,7 +28,7 @@ follows:
 
 In addition to the three main queues, there are a number of other maintenance
 registers that are used for querying queue status and initializing the PFA. See
-appendix \ref{apx:spec} for a complete specification. I will mention one status
+appendix \ref{apx:pfa_spec} for a complete specification. I will mention one status
 register here; the EVICT\_STAT register. When a page is placed on the evict
 queue, the PFA begins transferring it to remote memory, but does not block
 the OS. This allows the OS to perform useful work while the eviction is taking
@@ -48,7 +48,7 @@ does not overflow. This will also trap to the OS with a conventional page
 fault.
 
 \subsubsection{Page Table Entry} \label{sec:remPTE}
-The PFA uses a special PTE format for remote pages (figure
+The PFA uses a special PTE format for remote pages (Figure
 \ref{fig:pte_format}). The fields are as follows:
 
 \begin{outline}
@@ -83,7 +83,7 @@ is the use of pre-defined protection bits. This includes a valid bit which can
 be cleared by the OS before evicting to trigger a page fault on this page
 immediately after fetching (a useful debugging feature). Also, bits 8 and 9 
 are reserved for software by the RISC-V ISA and can aid the OS in bookkeeping
-and debugging (see section \ref{sec:linuxImpl}).
+and debugging (see Section \ref{sec:linuxImpl}).
 
 \subsubsection{Remote Memory Protocol}
 When the PFA receives a request for a remote page from the PTW, it must
@@ -94,10 +94,7 @@ ethernet-based network with a \gls{mtu} of \SI{1500}{\byte}.
 Figures \ref{fig:write_protocol} and \ref{fig:read_protocol} show the basic
 operation of the protocol. See appendix \ref{apx:memblade_spec} for a detailed
 description of these packet types. Note that due to the \gls{mtu}, each page takes 3
-packets to transfer. We handle potentially out-of-order packets by attaching
-sequence numbers and transaction IDs to each packet. We do, however, assume a
-reliable network that never drops packets.
-
+packets to transfer.
 \begin{figure}[h]
     \centering
     \begin{sequencediagram}
@@ -128,4 +125,23 @@ reliable network that never drops packets.
     transaction ID of the corresponding read request.}
 		\label{fig:read_protocol}
 \end{figure} 
+
+This protocol represents an initial design point that is suitible for a single
+client/memory blade pair. We handle potentially out-of-order packets by
+attaching sequence numbers and transaction IDs to each packet, but assume a
+reliable network. While multiple clients could be supported with this protocol,
+some interesting design challenges begin to appear. One issue is that of
+fairness and congestion. A robust protocol would need some prioritization of
+clients (perhaps assigned from a global allocator) and a backpressure mechanism
+to ensure optimal behavior. It may be desireable, due to high access latencies,
+to include some amount of compute in memory, whether that be traditional atomic
+memory operations, or more general remote procedure calls. Another important component is that of
+confidentiality and authentication. While it would be straight-forward to
+encrypt payloads, this may interfere with atomics or other compute-in-memory
+features. Headers present additional challenges. Simple encryption of headers
+would not be sufficient because attackers could simply replay old requests to
+modify application state. Some form of nonce (a unique number added to each
+header) may be required. While the design of a memory blade represents an
+interesting avenue of research, the design presented here is sufficient to
+evaluate the PFA and I will leave further discussion to future work.
 

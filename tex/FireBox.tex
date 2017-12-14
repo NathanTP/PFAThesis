@@ -1,5 +1,5 @@
 While there are several proposals for disaggregated WSCs, we will use the
-Firebox\cite{firebox} project as an example throughout this thesis (see figure
+Firebox\cite{firebox} project as an example throughout this thesis (see Figure
 \ref{fig:fb_diagram}).
 
 \begin{figure}
@@ -19,22 +19,40 @@ radix switches that can connect many SiPs within a single hop. Current
 estimates indicate these photonic networks can achieve aggregate bandwidths
 exceeding \SI{1}{\tera\bit\per\second} over 128 channels on a single
 fiber\cite{naturePhotonic}\cite{Photonic09}. Link latencies (including photonic
-transceiver crossings) are on the order of 10s of
-\si{\nano\second}, but final latencies will
-be determined by protocol decisions. We believe round-trip latencies (across a
-single switch) of approximately \SI{1}{\micro\second} to be a conservative prediction. For
-reference, current infiniband EDR networks provide approximately
-\SI{24}{\giga\bit\per\second} per
-link (with up to 12 links per NIC), and have round-trip latencies of
-approximately \SI{2}{\micro\second}\cite{binnigNW}.
+transceiver crossings) are on the order of 10s of \si{\nano\second}, but final
+latencies will be determined by protocol decisions. We believe round-trip
+latencies (across a single switch) of approximately \SI{1}{\micro\second} to be
+a conservative prediction. For reference, current infiniband EDR networks
+provide approximately \SI{24}{\giga\bit\per\second} per link (with up to 12
+links per NIC), and have round-trip latencies of approximately
+\SI{2}{\micro\second}\cite{binnigNW}.
 
 Compute nodes can be CPUs or special-purpose accelerators. In either case, they
 will include some amount of high-bandwidth on-package memory (HBM), we
-typically assume densities of approximately \SI{2}{\giga\byte} per core. The bulk of the memory
-in the system will consist of dedicated memory blades which are optimized for
-cost, power, and density. The total available memory may be as much as
-\SI{1}{\peta\byte}.
-Other resources may also be used, such as high-performance NAND flash, disks,
-and external network bridges. Ultimately, the scale of such a system will be
-limited by network capacity, but a Firebox would include at least thousands of
-cores and hundreds of \si{\tera\byte} of bulk memory.
+typically assume densities of approximately \SI{2}{\giga\byte} per core. This
+on-package memory will have very high speed (up to
+\SI{1}{\tera\byte\per\second}, at much lower power than traditional off-package
+memories. A relatively large amount of on-package memory, coupled with very
+fast networks allows most memory in the system to consist of network-attached memory
+blades which are optimized for cost, power, and density. The total available
+memory may be as much as \SI{1}{\peta\byte}. Other resources may also be used,
+such as high-performance NAND flash, disks, and external network bridges.
+Ultimately, the scale of such a system will be limited by network capacity, but
+a Firebox would include at least thousands of cores and hundreds of
+\si{\tera\byte} of bulk memory.
+
+\paragraph{WSC Challenges} \Glspl{wsc} promise to lower \gls{tco} significantly
+by improvimg utilization and allowing components to develop and scale
+independently. These benefits bring with them opportunities and challenges that
+bear mentioning. The increased flexibility in resource allocation will require
+sophisticated and scalable resource managent algorithms that balance
+utilization, congestion, and fairness. Encryption and authentication keys will
+also need to be managed to protect memory traffic that is now exposed to
+attackers across the network. In addition to being secure, memory-like
+interfaces must be very high performance and any encryption or authentication
+mechanisms must match that performance.  Finally, this new heterogenous memory
+hierarchy presents challenges to applications and operating systems. What is
+the right interface to expose the gap between local and remote memory? Will
+applications need to be re-written to take advantage of it? It is these
+questions that I focus on in the remainder of this thesis.
+
