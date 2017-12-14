@@ -1,6 +1,6 @@
 It is important to note that the majority of time in demand paging occurs in
 operating system software running in the page-fault handler. The OS must walk
-the page tables, lookup per-page metadata in internal data structures, and
+the page tables, look up per-page meta-data in internal data structures, and
 allocate a new frame, among other \gls{bookkeeping} tasks (see Section
 \ref{sec:linuxImpl} for more details on this process). Our experiments on a
 modern x86-based platform found that this processing can take anywhere from

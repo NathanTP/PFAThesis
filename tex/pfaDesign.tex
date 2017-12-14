@@ -18,7 +18,7 @@ follows:
       \2 Application code issues a load/store for the (now remote) page.
       \2 The PFA automatically and synchronously brings the page from remote
       memory and stores it in a free frame.
-      \2 The PFA clears the remote bit in the pte.
+      \2 The PFA clears the remote bit in the \gls{pte}.
       \2 The PFA pushes the virtual address of the fetched page to the NewQ.
       \2 The application is restarted.
   \1 New Page Management
@@ -90,7 +90,7 @@ When the PFA receives a request for a remote page from the PTW, it must
 communicate with a remote \gls{memory blade} to retrieve the appropriate data. It
 does this through a custom network protocol. This involves forming network
 packets and interfacing with the NIC. For this project we assume an
-ethernet-based network with a \gls{mtu} of \SI{1500}{\byte}.
+Ethernet-based network with a \gls{mtu} of \SI{1500}{\byte}.
 Figures \ref{fig:write_protocol} and \ref{fig:read_protocol} show the basic
 operation of the protocol. See appendix \ref{apx:memblade_spec} for a detailed
 description of these packet types. Note that due to the \gls{mtu}, each page takes 3
@@ -126,14 +126,14 @@ packets to transfer.
 		\label{fig:read_protocol}
 \end{figure} 
 
-This protocol represents an initial design point that is suitible for a single
+This protocol represents an initial design point that is suitable for a single
 client/memory blade pair. We handle potentially out-of-order packets by
 attaching sequence numbers and transaction IDs to each packet, but assume a
 reliable network. While multiple clients could be supported with this protocol,
 some interesting design challenges begin to appear. One issue is that of
 fairness and congestion. A robust protocol would need some prioritization of
-clients (perhaps assigned from a global allocator) and a backpressure mechanism
-to ensure optimal behavior. It may be desireable, due to high access latencies,
+clients (perhaps assigned from a global allocator) and a back pressure mechanism
+to ensure optimal behavior. It may be desirable, due to high access latencies,
 to include some amount of compute in memory, whether that be traditional atomic
 memory operations, or more general remote procedure calls. Another important component is that of
 confidentiality and authentication. While it would be straight-forward to

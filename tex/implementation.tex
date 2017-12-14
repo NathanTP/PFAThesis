@@ -1,8 +1,7 @@
 The PFA was implemented within the RISC-V ecosystem. RISC-V is an open-source
 instruction set with several open and closed-source implementations and ports
 for many common software components\cite{riscv}. I used the RISC-V port of
-Linux 4.13 with a Buildroot generated user
-space.
+Linux 4.13 with a Buildroot generated user space.
 
 \subsection{PFA Reference Implementation}
 To accelerate software development, and to provide a golden-model of
@@ -31,7 +30,7 @@ asynchronous eviction. This prevents optimizations such as switching to other
 threads while many pages are simultaneously evicted (a single eviction does not
 take long enough to justify a context switch). The current prototype also does
 not support the full memory blade specification. In particular, it does not
-implement ethernet headers which limits experiments to a single client/memory
+implement Ethernet headers which limits experiments to a single client/memory
 pair over a static network route. Instead, it sends a simplified form of packet
 header with only opcode and transaction ID. It also does not use a write
 acknowledgment, this means the OS must rate-limit writes to avoid overwhelming
@@ -53,16 +52,16 @@ The memory blade that is used by the PFA was implemented as a bare-metal C
 program running on a RocketCore-based compute node. This memory blade is
 connected to the same network as our PFA-enabled compute node and traverses a
 simple switch in order to communicate. The current implementation uses a simple
-protocol in lieu of a full ethernet stack. 
+protocol in lieu of a full Ethernet stack. 
 
 \subsubsection{FireSim}
 We simulated the RTL using a cycle-accurate simulator called
 "FireSim"\cite{firesim}. FireSim is an FPGA-accelerated simulator that runs on
 the Amazon cloud. It can simulate thousands of nodes with a cycle-accurate
-network and heterogenous components.  Many parameters of the simulation are
-tunable within FireSim. We decided on a 200Gbps network with 2us link latency,
-leading to roughly 8us page access time to the memory blade. The network is
-in-order and reliable. \todo[inline]{figure out DRAM parameters}
+network and heterogeneous components.  Many parameters of the simulation are
+tunable within FireSim. We decided on a \SI{200}{\giga\bit\per\second} network
+with \SI{2}{\micro\second} link latency, leading to roughly 8us page access time
+to the memory blade. The network is in-order and reliable. \todo[inline]{figure out DRAM parameters}
 
 \subsection{Linux Integration} \label{sec:linuxImpl}
     \input{tex/linuxDesign.tex}

@@ -1,11 +1,11 @@
-The problem of deep and heterogenous memory hierarchies is not entirely new;
+The problem of deep and heterogeneous memory hierarchies is not entirely new;
 previous mainframe and high-performance computing platforms have previously
 exposed the concept of remote memory. I will describe some of these approaches
 in the next two sections.
 
 \subsubsection{Low-Level Interfaces}
 \paragraph{NUMA}
-\Gls{numa} architectures partition memory resources accross several compute
+\Gls{numa} architectures partition memory resources across several compute
 nodes such that memory is always local to exactly one compute resource, but
 still directly addressable by the others. In this case, all memory has the same
 interface (loads and stores from CPUs), but some is faster than others
@@ -32,11 +32,11 @@ performance and a more complex interface to applications.
 
 \Gls{rdma} systems can scale to thousands of nodes and petabytes of
 memory\cite{IB_ref_design}. Performance can vary, and scales with deployment
-size, but modern infiniband networks provide round-trip latencies of several
+size, but modern Infiniband networks provide round-trip latencies of several
 microseconds (within a rack) and bandwidths of hundreds of gigabytes per
 second\cite{ib_perf}. These systems have historically been considered costly
 and only were primarily deployed in supercomputing environments, but recent
-ethernet-based implementations have made them increasingly
+Ethernet-based implementations have made them increasingly
 accessible\cite{RoCE}.
  
 \paragraph{Memory Semantic Fabrics}
