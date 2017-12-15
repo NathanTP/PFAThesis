@@ -21,16 +21,19 @@
 
 \subsection{End-to-End Performance} \label{sec:fullPerf}
   The benchmarks were both run under a cgroup in Linux in order to reduce the
-  available memory and emulate a system with low local memory. In this
-  experiment, we disable kpfad in order to isolate the batching of new-page
-  management from the scheduling flexibility offered by kswapd's asynchrony.
-  The PFA was configured to allow up to 64 outstanding page faults before
-  bookkeeping was performed.
+  available memory and emulate a system where applications would need to share
+  limited local memory. This is the same mechanism that system administrators
+  use today to control application memory consumption (e.g., in containers). In
+  this experiment, we disable kpfad in order to isolate the batching of
+  new-page management from the scheduling flexibility offered by kswapd's
+  asynchrony.  The PFA was configured to allow up to 64 outstanding page faults
+  before bookkeeping was performed.
 
   \begin{figure}[h] \centering
     \includegraphics[width=0.6\columnwidth]{figs/perf_nokswapd.png}
     \vspace{-5mm}
-    \caption{PFA vs Baseline without kswapd}
+    \caption{PFA vs Baseline without kswapd. Applications run approximately
+    20-40\% faster when the PFA is enabled.}
     \label{fig:pfa_perf}
   \end{figure}
   \FloatBarrier
@@ -72,7 +75,9 @@
     \vspace{-5mm}
     \caption{Breakdown of time in fetching a single remote page. All data are 
     the average of 10 runs. Error bars represent standard deviation (but are
-  almost too small to be seen).}
+  almost too small to be seen). Note that local processing time (including
+  the trap and NIC interaction) only accounts for 8\% of time with the PFA, but
+  accounts for over 50\% of time for the baseline.}
     \label{fig:fetch_breakdown}
   \end{figure}
 
@@ -101,14 +106,27 @@
   account for the effect that cache pollution from the handler has on the
   application when it restarts.
 
+  \begin{figure}[h] \centering
+    \includegraphics[width=0.6\columnwidth]{figs/fetch_breakdown_fastmem.png}
+    \vspace{-5mm}
+    \caption{Breakdown of time in fetching a single remote page from a
+      hypothetical fast memory blade with \SI{1}{\micro\second} page read
+      latency. As network and memory technology improves, the relative benefit
+      of the PFA increases (from 2.2x faster with the baseline memory blade to
+      4.6x faster with the optimistic memory blade).}
+    \label{fig:fetch_breakdown}
+  \end{figure}
+
   \paragraph{Total Page Faults}
   One key function of the PFA is to reduce the number of page faults due to
-  paging. Figure \ref{fig:pfa_swapfault} shows the number of paging-related
-  faults each benchmark experiences as a fraction of total faults. The first
-  thing to note is that the number paging-related faults decreases by
-  approximately 64 when the PFA is used. This is because the PFA interrupts the
-  OS to perform bookkeeping only when its queues are full (every 64 fetches in
-  this experiment). However, these only account for 45\% of faults, even in the
+  paging. Recall from Section \ref{sec:pagingOverview} that there are many
+  causes for faults (e.g., to perform copy-on-write), in Figure
+  \ref{fig:pfa_swapfault} I plot the number of paging-related faults each
+  benchmark experiences as a fraction of total faults. The first thing to note
+  is that the number paging-related faults decreases by approximately 64 when
+  the PFA is used. This is because the PFA interrupts the OS to perform
+  bookkeeping only when its queues are full (every 64 fetches in this
+  experiment). However, these only account for 45\% of faults, even in the
   worst-case (our simplest benchmark, Qsort) with 25\% local memory. The more
   complex Gen benchmark has even fewer paging-related faults (as a fraction of
   total). While there are certainly some savings due to fewer kernel crossings,

@@ -22,9 +22,9 @@ the kernel attempts to free task-assigned memory. It will first attempt to
 shrink any file caches (especially clean disk blocks that can simply be deleted
 without requiring any disk activity). If shrinking caches is not enough, the
 kernel begins to page non-file backed pages (called ``\glspl{anonpg}''). This
-is done using a pseudo-\gls{lru} eviction algorithm (step 2 in Figure
+is done using a pseudo-\gls{lru} eviction algorithm (Step 2 in Figure
 \ref{fig:vanilla_evict}). Page reclaiming can be triggered
-in one of two ways (step 1). If a hard memory limit is met, but more memory is needed to
+in one of two ways (Step 1). If a hard memory limit is met, but more memory is needed to
 proceed, then page-reclaiming happens synchronously (called direct reclaim).
 However, Linux tries to avoid this scenario by running a background thread
 called \gls{kswapd} that begins reclaiming pages when the application reaches a
@@ -43,23 +43,23 @@ its hard limit).
 Paging was originally intended to use hard disks as backing store, and this is
 reflected in the design of paging in Linux. To swap, one or more block
 devices must be formatted and mounted as swap devices. Linux then uses the
-blockID on this disk as a unique identifier for an evicted page (step 3). In
+block offset on this disk as a unique identifier for an evicted page (Step 3). In
 order to support more complex paging schemes (such as page compression, or
 heterogeneous memory), Linux introduced the \gls{tmem} layer\cite{tmem}. This
-scheme still uses disk-blocks as identifiers, but completely bypasses the block
-layer. This is important because many optimizations in the block layer (e.g.
+scheme still uses disk offsets as identifiers, but completely bypasses the block
+layer. This is important because many optimizations in the block layer (e.g.,
 write coalescing and block reordering) are not suitable for these alternative
 paging devices. Evictions do not immediately result in writes to \gls{tmem} or
 a swap device. Instead, pages are stored in a data structure called the swap
-cache (step 3). This swap cache helps reference count shared pages, and hedges
+cache (Step 3). This swap cache helps reference count shared pages, and hedges
 against poor eviction choices. Once a page is no longer physically available,
 Linux replaces the corresponding \gls{pte} with a \gls{swpent} which clears the
 valid bit, and uses the remaining bits to store the swap device ID (called
-``type'' in the kernel) and block ID (called ``offset'') (step 4).  When
+``type'' in the kernel) and block ID (called ``offset'') (Step 4).  When
 changing a \glspl{pte}, most architectures require the OS to flush the
 \gls{tlb}. This forces a page-table walk on the next access to this virtual
 address. Finally, the kernel begins a write to the swap device in the
-background (step 5).
+background (Step 5).
 
 \paragraph{Page Fetch}
 
@@ -70,24 +70,24 @@ background (step 5).
 \end{figure}
 
 When a user program attempts to access a page that has been swapped out, the
-\gls{ptw} notices the invalid PTE and issues a page fault trap to the OS (step
+\gls{ptw} notices the invalid PTE and issues a page fault trap to the OS (Step
 1 in Figure \ref{fig:vanilla_fetch}). Note that the hardware does not examine
 the remaining bits (the \gls{swpent} is purely a software construct). Upon
 receiving a page fault, Linux first determines if the requested virtual address
 has been assigned to this task. It does this by iterating through regions of
-virtual memory called \glspl{vma} (step 2). If a valid \gls{vma} is found, then
+virtual memory called \glspl{vma} (Step 2). If a valid \gls{vma} is found, then
 the OS begins a \gls{pgtbl} walk to locate the corresponding \gls{pte}. There
 are several reasons that a page fault may occur, the OS must check the
-\gls{pte} to determine the cause (step 3). Assuming the cause was an invalid
-\gls{pte}, the OS then searches the swap cache for this page (step 4). This is
+\gls{pte} to determine the cause (Step 3). Assuming the cause was an invalid
+\gls{pte}, the OS then searches the swap cache for this page (Step 4). This is
 in case some other process that shares it has already brought it in. If the
 page is not found, then a new frame is allocated and a transfer is initiated to
-read the page from the swap device (step 5). If the page is found in
+read the page from the swap device (Step 5). If the page is found in
 \gls{tmem}, then the transfer occurs synchronously, otherwise the process
 initiates the transfer and then yields to the scheduler, resulting in a context
 switch. When the transfer is complete, the kernel changes the PTE from a
 \gls{swpent} to a valid PTE with permissions defined by the \gls{vma}. Finally,
-the kernel updates page-tracking meta-data (step 6). This includes the \gls{lru} lists
+the kernel updates page-tracking meta-data (Step 6). This includes the \gls{lru} lists
 maintained by the eviction algorithm, \gls{vma} membership, and a number of
 other kernel subsystems. Note that several of these updates require
 synchronization with other kernel threads. Once all bookkeeping is complete,
@@ -102,7 +102,13 @@ changes.
 
 \begin{figure}[h] \centering
   \includegraphics[width=0.5\textwidth]{linux_changes.pdf}
-  \caption{Major changes to Linux paging to accommodate the PFA}
+  \caption{Major changes to Linux paging to accommodate the PFA. Most
+  subsystems could be re-used without change. On the eviction path, all that
+  was changed was the PTE update (to write a remote \gls{pte} instead of a
+  \gls{swpent}), and the write to disk (to write to remote memory instead). The
+  bookkeeping path is now triggered either from the page-fault handler (due to
+  a PFA service request) or from \gls{kpfad}. The core bookkeeping function
+remains unmodified.}
   \label{fig:linux_changes}
 \end{figure}
 
@@ -121,7 +127,8 @@ unlikely to cause problems as permissions rarely change. Furthermore, Linux is
 able to correct inappropriately restrictive permissions during page-faults.
 However, there may be security concerns if permissions are made more
 restrictive while a page is remote. This vulnerability exists in the window
-between page fetch and bookkeeping.
+between page fetch and bookkeeping. To mitigate this concern, the OS would need
+to be modified to update remote PTEs when changing \gls{vma} permissions.
 
 Under these simplifying assumptions, we are able to allocate frames
 proactively. The current implementation always refills the \gls{freeq} during
@@ -132,13 +139,13 @@ the \gls{freeq} in FIFO order). Furthermore, this FIFO allows for aggressive
 sanity checks that aided greatly in system debugging.
 
 \paragraph{Asynchronous Bookkeeping}
-In normal paging, the \emph{do\_swap\_page} function is able to update meta-data as
+In normal paging, the \emph{do\_swap\_page()} function is able to update meta-data as
 soon as a page is fetched. With the PFA, we delay this bookkeeping for a
 bounded but potentially non-trivial period of time. Many of these bookkeeping
-tasks are in support of heuristics or resource accounting (e.g. LRU lists for
+tasks are in support of heuristics or resource accounting (e.g., LRU lists for
 eviction, or memory utilization metrics). Delaying these tasks reduces the
 accuracy of various algorithms, but does not result in incorrect behavior.
-Others are needed for correct execution (e.g. \gls{vma} membership or shared
+Others are needed for correct execution (e.g., \gls{vma} membership or shared
 page tracking for copy-on-write). We address these correctness issues by
 performing bookkeeping preemptively before accessing any of the related
 algorithms. These tasks may be fairly common, but they are unlikely to actually
@@ -183,7 +190,7 @@ low-latency tasks such as bookkeeping.
 The most basic implementation of PFA support in Linux simply performs
 bookkeeping tasks whenever the internal queues of the PFA fill up. This
 effectively batches page bookkeeping, but it does not allow the kernel to
-choose when the bookkeeping occurs. In order to leverage idle periods in
+choose when the bookkeeping occurs. To leverage idle periods in
 program execution, or unused hardware threads, we implement a background
 bookkeeping daemon called \gls{kpfad}. \Gls{kpfad} is triggered by an adaptive
 timer that attempts to discover the average time between full queues. It does

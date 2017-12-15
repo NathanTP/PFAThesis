@@ -78,10 +78,18 @@ Memory-semantic fabrics are newer and it is not clear how their interfaces
 should be exposed. By coupling tightly with CPUs, it is possible to address
 them directly using virtual memory. However, it may be desirable to allow
 applications to choose which memory they access, or have more abstracted
-interfaces (e.g., disk-like). Furthermore, these fabrics are designed to support highly heterogeneous memory technologies. This has lead to page-migration proposals that try to manage performance and durability requirements either explicitly in the application, or transparently in the OS\cite{heteros}\cite{mojim}.
+interfaces (e.g., disk-like). Furthermore, these fabrics are designed to
+support highly heterogeneous memory technologies. This has lead to
+page-migration proposals that try to manage performance and durability
+requirements either explicitly in the application, or transparently in the
+OS\cite{heteros}\cite{mojim}.
 
 In this thesis, I will focus on a very general interface called demand paging
 (covered in detail in the next section) that can be implemented under any of
-the low-level interfaces listed here. However, the focus will be on the
-memory-semantic fabric approach.
-
+the low-level interfaces listed here. We assume a system that allows block
+reads and writes to remote memory resources. In a \gls{numa} system, this would
+translate to page migration. For \gls{rdma}, we would allocate memory from
+under-utilized nodes to store pages from oversubscribed nodes (as was done in
+\cite{infiniswap}). In the memory-semantic approach, dedicated memory blades
+would be used for remote memory and transfers would be initiated directly from
+the client CPUs (e.g., using \emph{memcpy()}).

@@ -18,7 +18,7 @@ extra TLB flush due to a difference in TLB design between Spike and the RISC-V
 implementation we used.
 
 \subsection{Hardware Implementation}
-The PFA was implemented in the Chisel hardware construction
+The PFA prototype was implemented in the Chisel hardware construction
 language\cite{chisel} and integrated with a simple in-order CPU called
 RocketCore\cite{rocketchip}. The components were integrated using the
 RocketChip system-on-chip (SoC) generator\cite{rocketchip}. I provide an
@@ -45,14 +45,21 @@ the CPU is pluggable, we use only a single RocketCore in-order CPU for our
 experiments. Our implementation used dedicated 16KB instruction and data
 caches. While the node had access to several gigabytes of main memory, we
 artificially limited application memory using Linux cgroups (see Section
-\ref{sec:eval} for details).
+\ref{sec:eval} for details). A real \gls{wsc} would likely include a mixture of
+simple cores, high single-thread performance cores (e.g., out of order), and
+accelerators. We hope to evaluate the Berkeley out-of-order core
+(BOOM\cite{BOOM}) and the Hwatcha vector accelerator\cite{hwatcha} in the
+future when they become available in our simulation infrastructure.
 
 \subsubsection{Memory Blade}
 The memory blade that is used by the PFA was implemented as a bare-metal C
 program running on a RocketCore-based compute node. This memory blade is
 connected to the same network as our PFA-enabled compute node and traverses a
 simple switch in order to communicate. The current implementation uses a simple
-protocol in lieu of a full Ethernet stack. 
+protocol in lieu of a full Ethernet stack. We are currently evaluating
+competing memory blade designs ranging from full hardware, to higher-level
+software implementations. However, this simple design is sufficient for
+evaluation of the core PFA functionality.
 
 \subsubsection{FireSim}
 We simulated the RTL using a cycle-accurate simulator called
@@ -60,8 +67,28 @@ We simulated the RTL using a cycle-accurate simulator called
 the Amazon cloud. It can simulate thousands of nodes with a cycle-accurate
 network and heterogeneous components.  Many parameters of the simulation are
 tunable within FireSim. We decided on a \SI{200}{\giga\bit\per\second} network
-with \SI{2}{\micro\second} link latency, leading to roughly 8us page access time
-to the memory blade. The network is in-order and reliable. \todo[inline]{figure out DRAM parameters}
+with \SI{2}{\micro\second} link latency, leading to roughly 8us page access
+time to the memory blade. The network is in-order and reliable. A realistic
+Firebox system would include a much faster network with many more components
+interacting. We limit ourselves to this simple design in order to evaluate only
+fully synthesizable components (especially the limited throughput of our CPU
+platform). Future experiments will evaluate the effects of faster networks with 
+improved compute and memory performance
+
+\begin{figure}[h]
+\centering
+\begin{tabular}{| l | l |}
+  \hline
+  \textbf{CPU Type} & Rocket (5-stage in order) \\ \hline
+  \textbf{CPU Frequency} & \SI{3.2}{\giga\hertz} \\ \hline
+  \textbf{Caches} & \SI{16}{\kilo\byte} D\$ and I\$ \\ \hline
+  \textbf{NW Topology} & Single Switch \\ \hline
+  \textbf{NW Bandwidth} & \SI{200}{\giga\bit\per\second} \\ \hline
+  \textbf{NW Link Latency} & \SI{2}{\micro\second} \\ \hline
+\end{tabular}
+\caption{System parameters used for evaluation.}
+\label{tbl:sim_parameters}
+\end{figure}
 
 \subsection{Linux Integration} \label{sec:linuxImpl}
     \input{tex/linuxDesign.tex}
